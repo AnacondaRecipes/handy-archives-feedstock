@@ -10,33 +10,47 @@ source:
   sha256: fba21101fd9e29d5e3b72823261aaae06b9350686f0d2067786d64dce73eb3f6
 
 build:
+  number: 0
+  # noarch is used. python issue on osx-64:
+  # - https://github.com/python/cpython/issues/91310
+  # - https://github.com/python/cpython/issues/90849
+  # Workaround with ARCHFLAGS="-arch x86_64" not worked
   noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
-  number: 1
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  #[py<36]
 
 requirements:
   host:
-    - flit-core >=3.2,<4
     - pip
-    - python {{ python_min }}
+    - python
+    - wheel
+    - setuptools
+    - flit-core >=3.2,<4
   run:
-    - python >={{ python_min }}
+    - python
+  run_constrained:
+    - python !=3.6.0
 
+# We can`t enable pytest because conftest uses the coincidence package, which is unavailable on the main channel.
+# The policy states that packages are not specifically built for testing.
 test:
   imports:
     - handy_archives
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
   requires:
     - pip
-    - python {{ python_min }}
 
 about:
-  home: https://github.com/domdfcoding/handy-archives/
+  home: https://github.com/domdfcoding/handy-archives
   summary: Some handy archive helpers for Python.
   license: MIT
+  license_family: MIT
   license_file: LICENSE
-  doc_url: https://handy-archives.readthedocs.io/en/latest
+  description: Some handy archive helpers for Python.
+  doc_url: https://handy-archives.readthedocs.io
+  dev_url: https://github.com/domdfcoding/handy-archives
 
 extra:
   recipe-maintainers:
