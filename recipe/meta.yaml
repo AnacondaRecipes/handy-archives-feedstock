@@ -27,7 +27,7 @@ requirements:
     - setuptools
     - flit-core >=3.2,<4
   run:
-    - python
+    - python >=3.9
   run_constrained:
     - python !=3.6.0
 
