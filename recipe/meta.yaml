@@ -6,11 +6,11 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
-  sha256: fba21101fd9e29d5e3b72823261aaae06b9350686f0d2067786d64dce73eb3f6
+  url: https://github.com/domdfcoding/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 953f262107acbc262cf666bac81d2b224cfc2233a96f55dbd1a14f7cac27d15d
 
 build:
-  number: 0
+  number: 1
   # noarch is used. python issue on osx-64:
   # - https://github.com/python/cpython/issues/91310
   # - https://github.com/python/cpython/issues/90849
@@ -31,16 +31,24 @@ requirements:
   run_constrained:
     - python !=3.6.0
 
-# We can`t enable pytest because conftest uses the coincidence package, which is unavailable on the main channel.
-# The policy states that packages are not specifically built for testing.
+# FileNotFoundError: [Errno 2] No such file or directory: 'testtar.tar'
+{% set ignore_tests = " --ignore=tests/test_tarfile.py" %}
+# FileNotFoundError: [Errno 2] No such file or directory: 'zipdir.zip'
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_zipfile.py" %}
+
 test:
+  source_files:
+    - tests
   imports:
     - handy_archives
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v {{ ignore_tests }} tests
   requires:
     - pip
+    - pytest >=6.0.0
+    - coincidence >=0.2.0
 
 about:
   home: https://github.com/domdfcoding/handy-archives
