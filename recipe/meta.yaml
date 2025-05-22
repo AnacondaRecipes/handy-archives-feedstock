@@ -29,7 +29,7 @@ requirements:
   run:
     - python >=3.9
   run_constrained:
-    - python !=3.6.0
+    - python >=3.6.1
 
 # FileNotFoundError: [Errno 2] No such file or directory: 'testtar.tar'
 {% set ignore_tests = " --ignore=tests/test_tarfile.py" %}
