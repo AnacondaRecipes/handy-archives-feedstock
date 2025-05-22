@@ -42,12 +42,11 @@ test:
   imports:
     - handy_archives
   commands:
-    # ModuleNotFoundError: No module named 'distutils'
-    # https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html
-    - export SETUPTOOLS_USE_DISTUTILS=stdlib  #[osx and x86_64]
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v {{ ignore_tests }} tests
+    # ModuleNotFoundError: No module named 'distutils'
+    # https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html
+    - pytest -v {{ ignore_tests }} tests  #[not (osx and x86_64)]
   requires:
     - pip
     - pytest >=6.0.0
