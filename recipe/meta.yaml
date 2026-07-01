@@ -36,12 +36,8 @@ requirements:
 # FileNotFoundError: [Errno 2] No such file or directory: 'zipdir.zip'
 {% set ignore_tests = ignore_tests + " --ignore=tests/test_zipfile.py" %}
 
-# cyclic test dependency
-# handy-archives -> coincidence
-# coincidence -> whey -> handy-archives
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_custom_tarfile.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_custom_zipfile.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_unpack_archive.py" %}
+# disable testing in first pass to avoid cyclic dependencies in test (coincidence):
+# coincidence -> whey -> pyproject-parser -> apeye-core -> shippinglabel -> dist-meta -> handy-archives
 test:
   source_files:
     - tests
@@ -52,7 +48,8 @@ test:
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     # ModuleNotFoundError: No module named 'distutils'
     # https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html
-    - pytest -v -p "no:coincidence" -p "no:handy_archives.testing" {{ ignore_tests }} tests #[not (osx and x86_64)]
+    # disabled for first pass due to cyclic test dependency (comment above)
+    #- pytest -v {{ ignore_tests }} tests  #[not (osx and x86_64)]
   requires:
     - pip
     - pytest >=6.0.0
