@@ -11,11 +11,6 @@ source:
 
 build:
   number: 2
-  # noarch is used. python issue on osx-64:
-  # - https://github.com/python/cpython/issues/91310
-  # - https://github.com/python/cpython/issues/90849
-  # Workaround with ARCHFLAGS="-arch x86_64" not worked
-  noarch: python
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  #[py<36]
 
@@ -49,7 +44,7 @@ test:
     # ModuleNotFoundError: No module named 'distutils'
     # https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html
     # disabled for first pass due to cyclic test dependency (comment above)
-    #- pytest -v {{ ignore_tests }} tests  #[not (osx and x86_64)]
+    #- pytest -v {{ ignore_tests }} tests
   requires:
     - pip
     - pytest >=6.0.0
