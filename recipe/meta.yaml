@@ -42,8 +42,6 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # ModuleNotFoundError: No module named 'distutils'
-    # https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html
     # disabled for first pass due to cyclic test dependency (comment above)
     #- pytest -v {{ ignore_tests }} tests
   requires:
