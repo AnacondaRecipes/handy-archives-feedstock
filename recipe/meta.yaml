@@ -31,8 +31,9 @@ requirements:
 # FileNotFoundError: [Errno 2] No such file or directory: 'zipdir.zip'
 {% set ignore_tests = ignore_tests + " --ignore=tests/test_zipfile.py" %}
 
-# disable testing in first pass to avoid cyclic dependencies in test (coincidence):
-# coincidence -> whey -> pyproject-parser -> apeye-core -> shippinglabel -> dist-meta -> handy-archives
+# cyclic test dependency
+# handy-archives -> coincidence
+# coincidence -> whey -> handy-archives
 test:
   source_files:
     - tests
