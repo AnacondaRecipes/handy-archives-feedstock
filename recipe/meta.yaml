@@ -10,7 +10,7 @@ source:
   sha256: 953f262107acbc262cf666bac81d2b224cfc2233a96f55dbd1a14f7cac27d15d
 
 build:
-  number: 2
+  number: 3
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  #[py<36]
 
@@ -31,9 +31,6 @@ requirements:
 # FileNotFoundError: [Errno 2] No such file or directory: 'zipdir.zip'
 {% set ignore_tests = ignore_tests + " --ignore=tests/test_zipfile.py" %}
 
-# cyclic test dependency
-# handy-archives -> coincidence
-# coincidence -> whey -> handy-archives
 test:
   source_files:
     - tests
@@ -42,13 +39,11 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # disabled for first pass due to cyclic test dependency (comment above)
-    #- pytest -v {{ ignore_tests }} tests
+    - pytest -v {{ ignore_tests }} tests
   requires:
     - pip
     - pytest >=6.0.0
-    # disabled for first pass due to cyclic test dependency (comment above)
-    #- coincidence >=0.2.0
+    - coincidence >=0.2.0
 
 about:
   home: https://github.com/domdfcoding/handy-archives
