@@ -2,7 +2,7 @@
 {% set version = "0.2.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -10,9 +10,9 @@ source:
   sha256: 953f262107acbc262cf666bac81d2b224cfc2233a96f55dbd1a14f7cac27d15d
 
 build:
-  number: 3
+  number: 4
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  #[py<36]
+  skip: true  #[py<36]
 
 requirements:
   host:
@@ -43,7 +43,7 @@ test:
   requires:
     - pip
     - pytest >=6.0.0
-    - coincidence >=0.2.0
+    - coincidence >=0.2.0  # [not (win and arm64)]
 
 about:
   home: https://github.com/domdfcoding/handy-archives
